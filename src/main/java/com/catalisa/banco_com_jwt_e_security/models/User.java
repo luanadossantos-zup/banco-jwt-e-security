@@ -25,10 +25,12 @@ public class User {
     )
     private Set<Role> roles;
 
+    @ManyToOne
+    @JoinColumn(name = "department_id", nullable = false)
+    private Department department;
+
     public User () {
-
     }
-
 
     public void setUsername(String username) {
         this.username = username;
