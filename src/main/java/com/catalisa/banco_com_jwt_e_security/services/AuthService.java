@@ -1,5 +1,9 @@
 package com.catalisa.banco_com_jwt_e_security.services;
 
+import com.catalisa.banco_com_jwt_e_security.dtos.LoginDto;
+import com.catalisa.banco_com_jwt_e_security.infra.jwt.JwtTokenProvider;
+import com.catalisa.banco_com_jwt_e_security.models.User;
+import com.catalisa.banco_com_jwt_e_security.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -13,23 +17,34 @@ public class AuthService {
     private AuthenticationManager authenticationManager;
     @Autowired
     private JwtTokenProvider jwtTokenProvider;
+    @Autowired
+    private UserRepository userRepository;
 
     public String login(LoginDto loginDto) {
+        try {
+            Authentication authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                            loginDto.getUsername(),
+                            loginDto.getPassword()
+                    )
+            );
 
-        // 01 - AuthenticationManager is used to authenticate the user
-        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
-                loginDto.getUsername(),
-                loginDto.getPassword()
-        ));
+            SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        /* 02 - SecurityContextHolder is used to allows the rest of the application to know
-        that the user is authenticated and can use user data from Authentication object */
-        SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        // 03 - Generate the token based on username and secret key
-        String token = jwtTokenProvider.generateToken(authentication);
+            // Buscar o usuário autenticado
+            User user = userRepository.findByUsername(loginDto.getUsername())
+                    .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
 
-        // 04 - Return the token to controller
-        return token;
+
+            String department = user.getDepartment().getName();
+
+            String token = jwtTokenProvider.generateToken(authentication,department);
+
+            return token;
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("Erro ao autenticar o usuário");
+        }
     }
 }
