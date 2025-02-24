@@ -41,7 +41,7 @@ public class SecurityConfig {
                     authorize.requestMatchers("/api/auth/login").permitAll();
                     authorize.requestMatchers(HttpMethod.POST, "/signin").permitAll();
                     authorize.requestMatchers(HttpMethod.OPTIONS, "/**").permitAll();
-                    authorize.requestMatchers(HttpMethod.GET, "/test/user").authenticated();
+                    authorize.requestMatchers(HttpMethod.GET, "/api/user").authenticated();
                     authorize.anyRequest().authenticated();
                 }).httpBasic(Customizer.withDefaults());
 

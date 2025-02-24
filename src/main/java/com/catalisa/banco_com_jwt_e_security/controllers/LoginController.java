@@ -41,20 +41,16 @@ public class LoginController {
                 )
         );
 
-        // Simule o departamento com base no usuário (você pode buscar isso do banco de dados)
-         // Exemplo: pode ser "Finance" ou outro valor baseado no usuário
-
-        // Define o contexto de segurança
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        // Recupera o usuário autenticado do banco de dados
+
         User user = userRepository.findByUsername(authentication.getName())
                 .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
 
-        // Obtém o departamento do usuário
+
         String department = user.getDepartment().getName();
 
-        // Gera o token JWT com o departamento como claim
+
         String token = jwtTokenProvider.generateToken(authentication, department);
 
         return ResponseEntity.ok(new JwtResponse(token));
