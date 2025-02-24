@@ -25,7 +25,7 @@ public class User {
     )
     private Set<Role> roles;
 
-    @ManyToOne
+    @ManyToOne(optional = false)
     @JoinColumn(name = "department_id", nullable = false)
     private Department department;
 
@@ -50,5 +50,13 @@ public class User {
 
     public void setRoles(Set<Role> roles) {
         this.roles = roles;
+    }
+
+    public Department getDepartment() {
+        return department;
+    }
+
+    public void setDepartment(Department department) {
+        this.department = department;
     }
 }
