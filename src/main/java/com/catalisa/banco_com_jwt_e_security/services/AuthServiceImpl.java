@@ -12,7 +12,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 @Service
-public class AuthService {
+public class AuthServiceImpl implements AuthService{
     @Autowired
     private AuthenticationManager authenticationManager;
     @Autowired

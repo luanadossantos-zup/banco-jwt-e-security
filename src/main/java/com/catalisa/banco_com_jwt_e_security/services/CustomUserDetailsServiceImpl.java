@@ -16,11 +16,11 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Component
-public class CustomUserDetailsService implements UserDetailsService {
+public class CustomUserDetailsServiceImpl implements UserDetailsService {
 
     @Autowired
     private UserRepository userRepository;
-    private static final Logger log = LoggerFactory.getLogger(CustomUserDetailsService.class);
+    private static final Logger log = LoggerFactory.getLogger(CustomUserDetailsServiceImpl.class);
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
