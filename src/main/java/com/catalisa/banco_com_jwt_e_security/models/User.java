@@ -25,8 +25,8 @@ public class User {
     )
     private Set<Role> roles;
 
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "department_id", nullable = false)
+    @ManyToOne(optional = false) // Relacionamento obrigatório
+    @JoinColumn(name = "department_id", nullable = false) // Coluna no banco de dados
     private Department department;
 
     public User () {
@@ -58,5 +58,9 @@ public class User {
 
     public void setDepartment(Department department) {
         this.department = department;
+    }
+
+    public String getUsername() {
+        return username;
     }
 }
