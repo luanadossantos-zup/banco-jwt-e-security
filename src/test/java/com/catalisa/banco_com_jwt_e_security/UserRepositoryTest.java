@@ -30,22 +30,22 @@ public class UserRepositoryTest {
 
     @BeforeEach
     void setUp() {
-        // Crie um departamento para associar ao usuário
+
         Department department = new Department();
         department.setName("IT");
         department = departmentRepository.save(department);
 
-        // Crie um role para associar ao usuário
+
         Role role = new Role();
         role.setName("ROLE_USER");
         role = roleRepository.save(role);
 
-        // Crie um usuário e associe o departamento e o role
+        // Cria um usuário
         User user = new User();
         user.setUsername("testuser");
         user.setPassword("password");
         user.setDepartment(department);
-        user.setRoles(Set.of(role)); // Adiciona o role ao usuário
+        user.setRoles(Set.of(role));
 
         // Salve o usuário no banco de dados
         userRepository.save(user);

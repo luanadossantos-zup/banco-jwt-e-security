@@ -2,7 +2,6 @@ package com.catalisa.banco_com_jwt_e_security.controllers;
 
 import com.catalisa.banco_com_jwt_e_security.dtos.UserResponse;
 import com.catalisa.banco_com_jwt_e_security.infra.jwt.JwtTokenProvider;
-import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -12,7 +11,6 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Date;
 import java.util.Map;
 
 @RestController
@@ -24,11 +22,6 @@ public class UserController {
 
     public UserController(JwtTokenProvider jwtTokenProvider) {
         this.jwtTokenProvider = jwtTokenProvider;
-    }
-
-    @GetMapping
-    public Map<String, Date> returnDate(){
-        return Map.of("dateNow", new Date());
     }
 
     @PreAuthorize("hasRole('ADMIN')")
