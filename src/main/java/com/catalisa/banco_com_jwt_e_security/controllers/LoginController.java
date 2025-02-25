@@ -41,8 +41,6 @@ public class LoginController {
                 )
         );
 
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-
 
         User user = userRepository.findByUsername(authentication.getName())
                 .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));

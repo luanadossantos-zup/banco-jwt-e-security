@@ -5,7 +5,10 @@ import com.catalisa.banco_com_jwt_e_security.infra.jwt.JwtTokenProvider;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
+
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -30,27 +33,37 @@ public class UserController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/admin")
-    public Map<String, String> adminRoute(){
-        return Map.of("message", "Acesso admin");
+    public ResponseEntity<?> adminRoute() {
+        var authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        // Verifica se o usuário tem o papel ROLE_USER
+        if (authentication
+                .getAuthorities()
+                .stream()
+                .anyMatch(authority -> authority.getAuthority().equals("ROLE_USER"))) {
+            return ResponseEntity.status(403).body("Acesso negado para usuários com o papel ROLE_USER");
+        }
+
+        return ResponseEntity.ok(Map.of("message", "Acesso admin"));
     }
 
 
     @GetMapping("/user")
-    public ResponseEntity<?> getUserInfo(HttpServletRequest request) {
-        // Extrai o token do cabeçalho Authorization
-        String token = request.getHeader("Authorization").replace("Bearer ", "");
+    public ResponseEntity<?> getUserInfo(@RequestHeader("Authorization") String authorizationHeader) {
+        // Recupera o usuário autenticado
+        var authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        // Valida o token
-        if (!jwtTokenProvider.validateToken(token)) {
-            return ResponseEntity.status(401).body("Token inválido ou expirado");
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return ResponseEntity.status(401).body("Usuário não autenticado");
         }
+        // Remove o prefixo "Bearer " para obter apenas o token
+        String token = authorizationHeader.substring(7);
 
         // Recupera o nome do usuário e o departamento do token
-        String username = jwtTokenProvider.getUsername(token);
+        String username = authentication.getName();
         String department = jwtTokenProvider.getDepartment(token);
 
-        // Retorna a resposta com as informações do usuário
-        return ResponseEntity.ok(new UserResponse("Bem-vindo, " + username + "!", department));
+        return ResponseEntity.ok(new UserResponse("Bem-vindo, " + username + "!" ,department));
     }
 
 
